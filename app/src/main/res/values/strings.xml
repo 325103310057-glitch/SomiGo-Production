@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">SomiGo</string>
+    <string name="app_tagline">SomiGo - Cravings Delivered Fast &amp; Fresh</string>
+    <string name="tab_home">Home</string>
+    <string name="tab_search">Search</string>
+    <string name="tab_orders">Orders</string>
+    <string name="tab_favorites">Favorites</string>
+    <string name="tab_profile">Profile</string>
+    <string name="tab_admin">Admin</string>
+    <string name="currency_symbol">₹</string>
+    <string name="group_order_title">Group Ordering</string>
+    <string name="split_bill_title">Split Bill</string>
+    <string name="rewards_title">SomiGo Rewards</string>
+    <string name="assistant_title">What Should I Eat?</string>
+</resources>

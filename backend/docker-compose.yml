@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  # 1. FastAPI Backend API Gateway
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://app_runtime:secure_runtime_pass_replace_in_prod@db:5432/bitedash_db
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=bitedash_super_secret_jwt_key_2026_change_in_prod
+      - ENVIRONMENT=production
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - bitedash-net
+
+  # 2. Cloud PostgreSQL Database (Authoritative Source of Truth)
+  db:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=bitedash_user
+      - POSTGRES_PASSWORD=bitedash_secure_pass
+      - POSTGRES_DB=bitedash_db
+    ports:
+      - "127.0.0.1:5432:5432" # Bound strictly to localhost/internal for security
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init_schema.sql:/docker-entrypoint-initdb.d/01_init_schema.sql:ro
+      - ./database/create_roles.sql:/docker-entrypoint-initdb.d/02_create_roles.sql:ro
+      - ./database/seed_data.sql:/docker-entrypoint-initdb.d/03_seed_data.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bitedash_user -d bitedash_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bitedash-net
+
+  # 3. pgAdmin 4 - Visual Cloud Database Console
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@bitedash.in
+      - PGADMIN_DEFAULT_PASSWORD=bitedash_admin_secret_2026
+      - PGADMIN_CONFIG_SERVER_MODE=False
+    ports:
+      - "5050:80"
+    volumes:
+      - ./database/pgadmin_servers.json:/pgadmin4/servers.json:ro
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - bitedash-net
+
+  # 4. Redis Cache & Live Location Broker
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - bitedash-net
+
+networks:
+  bitedash-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+  redis_data:

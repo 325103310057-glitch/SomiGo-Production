@@ -1,0 +1,6 @@
+{
+  "name": "SomiGo",
+  "description": "SomiGo - On-demand food delivery, group ordering, live tracking, and restaurant discovery platform",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

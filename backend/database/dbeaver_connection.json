@@ -1,0 +1,16 @@
+{
+  "connection": {
+    "name": "SomiGo Production Cloud DB",
+    "driver": "postgres-jdbc",
+    "host": "localhost",
+    "port": "5432",
+    "database": "somigo_db",
+    "user": "database_admin",
+    "save-password": false,
+    "properties": {
+      "ssl": "prefer",
+      "connectTimeout": "20",
+      "socketTimeout": "60"
+    }
+  }
+}

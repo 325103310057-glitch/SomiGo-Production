@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "SomiGo Production Cloud DB",
+      "Group": "Servers",
+      "Host": "db",
+      "Port": 5432,
+      "MaintenanceDB": "somigo_db",
+      "Username": "somigo_user",
+      "SSLMode": "prefer"
+    }
+  }
+}
